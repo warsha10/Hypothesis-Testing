@@ -1,0 +1,262 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# #### 1. A F&B manager wants to determine whether there is any significant difference in the diameter of the cutlet between two units. A randomly selected sample of cutlets was collected from both units and measured? Analyze the data and draw inferences at 5% significance level. Please state the assumptions and tests that you carried out to check validity of the assumptions.
+# 
+# H0: μ1 = μ2 (There is no significant difference in diameters of cutlets between two units)
+# 
+# H1: μ1 ≠ μ2 (There is a significant difference in diameters of cutlets between two units)
+
+# In[1]:
+
+
+import pandas as pd 
+import numpy as np
+from scipy import stats
+from scipy.stats import norm
+
+
+# In[2]:
+
+
+sample_data=pd.read_csv('Cutlets.csv')
+sample_data
+
+
+# In[3]:
+
+
+sample_data.head()
+
+
+# In[4]:
+
+
+unit_A=sample_data[['Unit A']]
+unit_A
+
+
+# In[5]:
+
+
+unit_B=sample_data[['Unit B']]
+unit_B
+
+
+# In[6]:
+
+
+t_value,p_value=stats.ttest_ind(unit_A,unit_B)
+print('The test statistic is', t_value)
+print('The p-value is', p_value)
+
+alpha = 0.05
+
+if p_value<=alpha:
+    print('Since p-value is less than alpha, we reject the null hypothesis ')
+else:
+    print('Since p-value is greater than alpha, we do not reject the null hypothesis ')
+
+
+
+# μ1 = μ2 Thus, there is no difference in diameters of cutlets between two units
+# 
+# 
+
+# #### 2.  A hospital wants to determine whether there is any difference in the average Turn Around Time (TAT) of reports of the laboratories on their preferred list. They collected a random sample and recorded TAT for reports of 4 laboratories. TAT is defined as sample collected to report dispatch.
+#    
+#   Analyze the data and determine whether there is any difference in average TAT among the different laboratories at 5% significance level.
+# 
+# 
+# H0: There is no difference in average TAT among the different laboratories
+# 
+# H1: There is a difference in average TAT among atleast one of the different laboratories
+
+# In[7]:
+
+
+lab_data=pd.read_csv('LabTAT.csv')
+lab_data
+
+
+# In[8]:
+
+
+lab1_data=lab_data['Laboratory 1']
+lab2_data=lab_data['Laboratory 2']
+lab3_data=lab_data['Laboratory 3']
+lab4_data=lab_data['Laboratory 4']
+
+
+# In[9]:
+
+
+lab1_data.head()
+
+
+# In[10]:
+
+
+#perform one way ANOVA
+p_value=stats.f_oneway(lab1_data, lab2_data, lab3_data, lab4_data)
+p_value
+
+
+# In[11]:
+
+
+p_value=p_value[1]
+
+
+# In[12]:
+
+
+alpha = 0.05
+
+if p_value<=alpha:
+    print('Since p_value is less than alpha, we reject the null hypothesis ')
+else:
+    print('Since p_value is greater than alpha, we do not reject the null hypothesis ') 
+
+
+# In[13]:
+
+
+'Atleast one sample TAT population mean is different Thus there is variance or difference in average Turn Around Time (TAT) of reports of the laboratories on their preferred list'
+
+
+# ####  3. Sales of products in four different regions is tabulated for males and females. Find if male-female buyer rations are similar across regions.
+# 
+# H0:  All proportions are equal
+# 
+# H!:  Not all proportions are equal
+
+# In[14]:
+
+
+buyer_data=pd.read_csv('BuyerRatio.csv')
+buyer_data
+
+
+# In[15]:
+
+
+del buyer_data['Observed Values']
+
+
+# In[16]:
+
+
+buyer_data
+
+
+# In[17]:
+
+
+chi2_score,p_val,dof,expected =stats.chi2_contingency(buyer_data)
+chi2_score,p_val,dof,expected 
+print('***************************************************')
+print('CHI-SQAURE TEST RESULTS')
+print('Chi2 Value        : ',chi2_score)
+print('P-value           : ',p_val)
+print('Degree of Freedom : ',dof)
+print('Expected Table    :\n',expected)
+print('***************************************************')
+
+
+# In[23]:
+
+
+alpha = 0.05
+if p_val<alpha:
+    print('We reject the null hypothesis and we can say that male-female buyer rations are not similar across regions')
+else:
+    print('We do not reject the null hypothesis and we can say that male-female buyer rations are similar across regions')
+
+
+# In[ ]:
+
+
+
+
+
+# ####  4. TeleCall uses 4 centers around the globe to process customer order forms. They audit a certain %  of the customer order forms. Any error in order form renders it defective and has to be reworked before processing.  The manager wants to check whether the defective %  varies by centre. Please analyze the data at 5% significance level and help the manager draw appropriate inferences
+# 
+# H0:The defective % of customer orders does not vary by centre
+# 
+# H1:The defective % of customer orders varies by centre
+
+# In[26]:
+
+
+customer_data=pd.read_csv('Costomer+OrderForm.csv')
+customer_data
+
+
+# In[27]:
+
+
+customer_data.shape
+
+
+# In[31]:
+
+
+customer_data.Phillippines.value_counts()
+
+
+# In[32]:
+
+
+customer_data.Indonesia.value_counts()
+
+
+# In[33]:
+
+
+customer_data.Malta.value_counts()
+
+
+# In[34]:
+
+
+customer_data.India.value_counts()
+
+
+# In[36]:
+
+
+# Make a contingency table
+obs=np.array([[271,267,269,280],[29,33,31,20]])
+obs
+
+
+# In[37]:
+
+
+chi2_score,p_val,dof,expected =stats.chi2_contingency(obs)
+chi2_score,p_val,dof,expected 
+print('***************************************************')
+print('CHI-SQAURE TEST RESULTS')
+print('Chi2 Value        : ',chi2_score)
+print('P-value           : ',p_val)
+print('Degree of Freedom : ',dof)
+print('Expected Table    :\n',expected)
+print('***************************************************')
+
+
+# In[41]:
+
+
+alpha = 0.05
+if p_val<alpha:
+    print('We reject the null hypothesis and we can say that The defective % of customer orders varies by centre')
+else:
+    print('We do not reject the null hypothesis and we can say that The defective % of customer orders does not vary by centre')   
+
+
+# In[ ]:
+
+
+
+
